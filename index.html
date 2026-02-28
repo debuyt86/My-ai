@@ -15,9 +15,10 @@
             --primary-blue: #3b82f6;
             --input-bg: #f3f4f6;
             --hover-bg: #e5e7eb;
+            --user-msg-bg: #eff6ff;
+            --bot-msg-bg: #f9fafb;
         }
 
-        /* Dark Mode Variables */
         body.dark-mode {
             --bg-color: #111827;
             --sidebar-bg: #1f2937;
@@ -27,245 +28,95 @@
             --primary-blue: #3b82f6;
             --input-bg: #374151;
             --hover-bg: #4b5563;
+            --user-msg-bg: #1e3a8a;
+            --bot-msg-bg: #1f2937;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+            background-color: var(--bg-color); color: var(--text-main);
+            display: flex; height: 100vh; overflow: hidden;
             transition: background-color 0.3s, color 0.3s;
         }
 
         /* --- SIDEBAR --- */
         .sidebar {
-            width: 260px;
-            background-color: var(--sidebar-bg);
+            width: 260px; background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
+            display: flex; flex-direction: column; padding: 1rem;
             transition: background-color 0.3s;
         }
-
-        .new-chat-btn {
-            background-color: var(--input-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 0.75rem 1rem;
-            border-radius: 9999px; /* Pill shape */
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: background-color 0.2s;
+        .new-chat-btn, .menu-btn {
+            background-color: var(--input-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 0.75rem 1rem;
+            border-radius: 9999px; font-size: 0.9rem; cursor: pointer;
+            display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;
         }
-
-        .new-chat-btn:hover {
-            background-color: var(--hover-bg);
-        }
-
-        .sidebar-spacer {
-            flex: 1;
-        }
-
-        .menu-btn {
-            background: none;
-            border: none;
-            color: var(--text-main);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 0.9rem;
-            text-align: left;
-            transition: background-color 0.2s;
-        }
-
-        .menu-btn:hover {
-            background-color: var(--hover-bg);
-        }
+        .menu-btn { background: none; border: none; border-radius: 8px; }
+        .sidebar-spacer { flex: 1; }
 
         /* --- MAIN CONTENT --- */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+        .main-content { flex: 1; display: flex; flex-direction: column; position: relative; }
 
         /* Greeting Area */
         .greeting-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            text-align: center;
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 2rem; text-align: center;
         }
-
-        .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #a855f7, #3b82f6);
-            border-radius: 16px;
-            margin-bottom: 1.5rem;
+        .logo-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #a855f7, #3b82f6); border-radius: 16px; margin-bottom: 1.5rem; }
+        .greeting-area h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(to right, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Chat Box (New Area for messages) */
+        .chat-box {
+            flex: 1; overflow-y: auto; padding: 2rem; display: none; flex-direction: column; gap: 1.5rem;
         }
-
-        .greeting-area h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(to right, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .message-row { display: flex; width: 100%; max-width: 800px; margin: 0 auto; }
+        .message-row.user { justify-content: flex-end; }
+        .message-row.bot { justify-content: flex-start; }
+        
+        .message-bubble {
+            max-width: 80%; padding: 1rem 1.5rem; border-radius: 20px; font-size: 1rem; line-height: 1.5;
         }
-
-        .greeting-area p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
+        .user .message-bubble { background-color: var(--user-msg-bg); color: var(--text-main); border-bottom-right-radius: 4px; border: 1px solid var(--primary-blue); }
+        .bot .message-bubble { background-color: var(--bot-msg-bg); color: var(--text-main); border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
 
         /* Input Area */
-        .input-wrapper {
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
+        .input-wrapper { padding: 1rem 2rem 2rem 2rem; max-width: 800px; margin: 0 auto; width: 100%; }
         .input-box {
-            display: flex;
-            align-items: center;
-            background-color: var(--input-bg);
-            border-radius: 9999px;
-            padding: 0.5rem 0.5rem 0.5rem 1.25rem;
-            gap: 0.5rem;
-            border: 1px solid var(--border-color);
-            transition: background-color 0.3s, border-color 0.3s;
+            display: flex; align-items: center; background-color: var(--input-bg);
+            border-radius: 9999px; padding: 0.5rem 0.5rem 0.5rem 1.25rem; gap: 0.5rem; border: 1px solid var(--border-color);
         }
+        .chat-input { flex: 1; background: transparent; border: none; outline: none; font-size: 1rem; color: var(--text-main); padding: 0.5rem 0; }
+        .send-btn { background-color: var(--primary-blue); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .disclaimer { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; }
+        #file-preview { display: none; align-items: center; font-size: 0.85rem; color: var(--primary-blue); margin-bottom: 0.5rem; margin-left: 1.5rem; font-weight: 500; }
 
-        /* Upload Button styling */
-        .upload-label {
-            cursor: pointer;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: background-color 0.2s, color 0.2s;
-        }
-
-        .upload-label:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-main);
-        }
-
-        .chat-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-            color: var(--text-main);
-            padding: 0.5rem 0;
-        }
-
-        .send-btn {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .send-btn:hover {
-            opacity: 0.9;
-        }
-
-        .disclaimer {
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 1rem;
-        }
-
-        /* File Preview Area */
-        #file-preview {
-            display: none;
-            align-items: center;
-            font-size: 0.85rem;
-            color: var(--primary-blue);
-            margin-bottom: 0.5rem;
-            margin-left: 1.5rem;
-            font-weight: 500;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none; /* Hide sidebar on small screens for now */
-            }
-        }
+        @media (max-width: 768px) { .sidebar { display: none; } .input-wrapper { padding: 1rem; } }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <button class="new-chat-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            New Chat
-        </button>
-        
+        <button class="new-chat-btn" onclick="location.reload()">+ New Chat</button>
         <div class="sidebar-spacer"></div>
-        
-        <button class="menu-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            Settings
-        </button>
-        <button class="menu-btn" id="theme-toggle">
-            <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            <span id="theme-text">Dark Mode</span>
-        </button>
+        <button class="menu-btn" id="theme-toggle">🌙 <span id="theme-text">Dark Mode</span></button>
     </aside>
 
     <main class="main-content">
-        <div class="greeting-area">
+        <div class="greeting-area" id="greeting-area">
             <div class="logo-icon"></div>
             <h1>Hello, User</h1>
             <p>How can I help you today?</p>
         </div>
 
-        <div class="input-wrapper">
-            <div id="file-preview">📄 <span id="file-name">filename.txt</span></div>
-            
-            <div class="input-box">
-                <input type="file" id="file-upload" style="display: none;">
-                <label for="file-upload" class="upload-label" title="Upload File">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
-                </label>
+        <div class="chat-box" id="chat-box">
+            </div>
 
+        <div class="input-wrapper">
+            <div id="file-preview">📄 <span id="file-name"></span></div>
+            <div class="input-box">
                 <input type="text" class="chat-input" id="chat-input" placeholder="Ask anything...">
-                
                 <button class="send-btn" id="send-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                 </button>
@@ -278,66 +129,57 @@
         (function() {
             'use strict';
 
-            // Element References
             const themeToggleBtn = document.getElementById('theme-toggle');
             const themeText = document.getElementById('theme-text');
-            const fileUpload = document.getElementById('file-upload');
-            const filePreview = document.getElementById('file-preview');
-            const fileNameDisplay = document.getElementById('file-name');
             const sendBtn = document.getElementById('send-btn');
             const chatInput = document.getElementById('chat-input');
+            const greetingArea = document.getElementById('greeting-area');
+            const chatBox = document.getElementById('chat-box');
 
-            // 1. Dark Mode Toggle Logic
+            // Dark Mode
             themeToggleBtn.addEventListener('click', function() {
                 document.body.classList.toggle('dark-mode');
+                themeText.textContent = document.body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
+            });
+
+            // Add Message to Screen
+            function appendMessage(sender, text) {
+                const row = document.createElement('div');
+                row.className = 'message-row ' + (sender === 'user' ? 'user' : 'bot');
                 
-                if (document.body.classList.contains('dark-mode')) {
-                    themeText.textContent = 'Light Mode';
-                } else {
-                    themeText.textContent = 'Dark Mode';
-                }
-            });
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble';
+                bubble.textContent = text;
+                
+                row.appendChild(bubble);
+                chatBox.appendChild(row);
+                
+                // Scroll to bottom
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
 
-            // 2. File Upload Display Logic
-            fileUpload.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    fileNameDisplay.textContent = file.name;
-                    filePreview.style.display = 'flex'; // Show the file preview area
-                } else {
-                    filePreview.style.display = 'none'; // Hide if no file
-                }
-            });
-
-            // 3. Send Button Action Logic
+            // Send Button Logic
             function handleSend() {
                 const message = chatInput.value.trim();
-                const file = fileUpload.files[0];
+                if (!message) return;
 
-                if (!message && !file) {
-                    alert("Please type a message or upload a file first.");
-                    return;
-                }
+                // Hide greeting, show chat box
+                greetingArea.style.display = 'none';
+                chatBox.style.display = 'flex';
 
-                console.log("Message sent:", message);
-                if (file) {
-                    console.log("File attached:", file.name);
-                }
-
-                // Reset after sending (For Demo)
+                // 1. Show User Message
+                appendMessage('user', message);
                 chatInput.value = '';
-                fileUpload.value = '';
-                filePreview.style.display = 'none';
-                alert("Action triggered! Check browser console for data.");
+
+                // 2. Simulate Bot Typing Delay (1.5 seconds)
+                setTimeout(function() {
+                    appendMessage('bot', "Main ek dummy AI hoon. Abhi mere piche koi real database ya API connect nahi hai. Par aapka frontend bilkul perfect kaam kar raha hai!");
+                }, 1500);
             }
 
             sendBtn.addEventListener('click', handleSend);
-
-            // Send on Enter key press
             chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    handleSend();
-                }
+                if (e.key === 'Enter') handleSend();
             });
 
         })();
