@@ -68,7 +68,7 @@
         
         /* Chat Box */
         .chat-box {
-            flex: 1; overflow-y: auto; padding: 2rem; display: none; flex-direction: column; gap: 1.5rem;
+            flex: 1; overflow-y: auto; padding: 2rem; display: none; flex-direction: column; gap: 1.5rem; scroll-behavior: smooth;
         }
         .message-row { display: flex; width: 100%; max-width: 800px; margin: 0 auto; }
         .message-row.user { justify-content: flex-end; }
@@ -137,13 +137,11 @@
             'use strict';
 
             // ==========================================
-            // YAHAN APNI API KEY DAALEIN
+            // HUGGING FACE API SETTINGS
             // ==========================================
-            const API_KEY = "YOUR_OPENROUTER_API_KEY_HERE"; 
-            
-            // Model Details
-            const API_URL = "https://openrouter.ai/api/v1/chat/completions";
-            const MODEL_NAME = "arcee-ai/trinity-large-preview:free";
+            const API_KEY = "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"; 
+            const MODEL_NAME = "HuggingFaceH4/zephyr-7b-beta"; 
+            const API_URL = `https://api-inference.huggingface.co/models/${MODEL_NAME}/v1/chat/completions`;
             // ==========================================
 
             const themeToggleBtn = document.getElementById('theme-toggle');
@@ -156,7 +154,7 @@
             const filePreview = document.getElementById('file-preview');
             const fileNameDisplay = document.getElementById('file-name');
 
-            // Chat History Array to keep context
+            // Context history
             let chatHistory = [];
 
             // Theme Toggle
@@ -165,7 +163,7 @@
                 themeText.textContent = document.body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
             });
 
-            // File Upload Preview
+            // File Upload Display
             fileUpload.addEventListener('change', function(event) {
                 const file = event.target.files[0];
                 if (file) {
@@ -176,7 +174,7 @@
                 }
             });
 
-            // Add Message to Screen and return its ID
+            // Add Message UI
             function appendMessage(sender, text, id = null) {
                 const row = document.createElement('div');
                 row.className = 'message-row ' + (sender === 'user' ? 'user' : 'bot');
@@ -193,7 +191,7 @@
                 return bubble;
             }
 
-            // Update existing message text
+            // Update Message Text
             function updateMessage(id, newText) {
                 const bubble = document.getElementById(id);
                 if (bubble) {
@@ -202,14 +200,13 @@
                 }
             }
 
-            // Send Message Logic (Async)
+            // Chat Logic
             async function handleSend() {
                 let messageText = chatInput.value.trim();
                 const file = fileUpload.files[0];
 
                 if (!messageText && !file) return;
 
-                // Disable input while generating
                 chatInput.disabled = true;
                 sendBtn.disabled = true;
 
@@ -217,36 +214,30 @@
                     messageText = messageText ? messageText + `\n[File Attached: ${file.name}]` : `[File Attached: ${file.name}]`;
                 }
 
-                // Show UI
                 greetingArea.style.display = 'none';
                 chatBox.style.display = 'flex';
 
-                // Add User message
                 appendMessage('user', messageText);
                 chatHistory.push({ role: "user", content: messageText });
 
-                // Clear input
                 chatInput.value = '';
                 fileUpload.value = '';
                 filePreview.style.display = 'none';
 
-                // Add Bot "Typing..." message
                 const botBubbleId = 'bot-msg-' + Date.now();
-                appendMessage('bot', "Typing...", botBubbleId);
+                appendMessage('bot', "Typing... (Pehla message thoda time le sakta hai)", botBubbleId);
 
-                // API Call
                 try {
                     const response = await fetch(API_URL, {
                         method: "POST",
                         headers: {
                             "Authorization": `Bearer ${API_KEY}`,
-                            "Content-Type": "application/json",
-                            "HTTP-Referer": window.location.href, 
-                            "X-Title": "My GitHub Pages AI"
+                            "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
                             model: MODEL_NAME,
-                            messages: chatHistory
+                            messages: chatHistory,
+                            max_tokens: 800
                         })
                     });
 
@@ -254,21 +245,18 @@
 
                     if (data.choices && data.choices.length > 0) {
                         const aiResponseText = data.choices[0].message.content;
-                        // Update typing bubble with real text
                         updateMessage(botBubbleId, aiResponseText);
-                        // Save to history
                         chatHistory.push({ role: "assistant", content: aiResponseText });
                     } else if (data.error) {
-                        updateMessage(botBubbleId, "Error: " + data.error.message);
+                        updateMessage(botBubbleId, "Error: " + (data.error.message || JSON.stringify(data.error)));
                     } else {
-                        updateMessage(botBubbleId, "Kuch error aa gaya API se.");
+                        updateMessage(botBubbleId, "Kuch technical error aa gaya API se.");
                     }
 
                 } catch (error) {
                     console.error("Fetch Error:", error);
-                    updateMessage(botBubbleId, "Network error. Sayad API key galat hai ya internet issue hai.");
+                    updateMessage(botBubbleId, "Network error. Please check your internet connection.");
                 } finally {
-                    // Re-enable input
                     chatInput.disabled = false;
                     sendBtn.disabled = false;
                     chatInput.focus();
